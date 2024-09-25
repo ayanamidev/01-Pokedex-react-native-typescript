@@ -3,6 +3,7 @@ import List from "@/components/List";
 import { Pokemon } from "@/types/app";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Button from "@/components/Button";
 
 
 const HomeScreen =()=>{ //HomeScreem representa la pantalla principal o inicio de una app
@@ -33,15 +34,8 @@ const HomeScreen =()=>{ //HomeScreem representa la pantalla principal o inicio d
     <SafeAreaView style={styles.container}>
         <List items={items}/>
         <View style={styles.buttonContainer}>
-            <Pressable style={styles.button}>
-                <Text style={styles.text}>Previous</Text>
-
-            </Pressable>
-
-            <Pressable style={styles.button}>
-                <Text style={styles.text}>Next</Text>
-
-            </Pressable>
+            <Button text="Previous" leftIcon="navigate-before" onPress={()=>{ }}/>
+            <Button text="Next" rightIcon="navigate-next" onPress={()=>{ }}/>
         </View>
         
         
