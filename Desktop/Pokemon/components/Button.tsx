@@ -29,6 +29,7 @@ const styles=StyleSheet.create({
         flexDirection:"row",
         justifyContent:"center",
         gap:5,
+        alignItems:"center",
         backgroundColor:"pink",
         borderRadius:10,
         padding:10,

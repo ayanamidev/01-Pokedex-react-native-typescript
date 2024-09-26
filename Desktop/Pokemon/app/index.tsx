@@ -9,14 +9,26 @@ import Button from "@/components/Button";
 const HomeScreen =()=>{ //HomeScreem representa la pantalla principal o inicio de una app
     const[items,setItems] = useState<Pokemon[]>([]); //https://pokeapi.co/api/v2/pokemon
     const[isLoading,setIsLoading]=useState(true);
+    const[next,setNext]=useState(null);
+    const[previous,setPrevious]=useState(null);
 
-    useEffect(()=>{
-        fetch("https://pokeapi.co/api/v2/pokemon")
-        .then(data =>data.json())
-        .then(result=>setItems(result.results))
-        .finally(()=>setIsLoading(false));
+    const fetchPokemon=(url:string|null)=>{
+        if(!url){
+            return;
+        }
+        setIsLoading(true);
+        fetch(url)
+            .then(data =>data.json())
+            .then(result=>{
+                setItems(result.results);
+                setNext(result.next);
+                setPrevious(result.previous);
+            })
+            .finally(()=>setIsLoading(false));
 
-    },[])
+    };
+
+    useEffect(()=>fetchPokemon("https://pokeapi.co/api/v2/pokemon?offset=0&limit=100"),[]);
 
     if(isLoading){
         return(
@@ -34,8 +46,16 @@ const HomeScreen =()=>{ //HomeScreem representa la pantalla principal o inicio d
     <SafeAreaView style={styles.container}>
         <List items={items}/>
         <View style={styles.buttonContainer}>
-            <Button text="Previous" leftIcon="navigate-before" onPress={()=>{ }}/>
-            <Button text="Next" rightIcon="navigate-next" onPress={()=>{ }}/>
+            <Button 
+                text="Previous"
+                leftIcon="navigate-before"
+                onPress={()=>{fetchPokemon(previous) }} 
+                disabled={!previous}/>
+            <Button 
+                text="Next" 
+                rightIcon="navigate-next" 
+                onPress={()=>{fetchPokemon(next)}} 
+                disabled={!next}/>
         </View>
         
         
