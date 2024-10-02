@@ -14,7 +14,7 @@ export type PokemonDetails={
     cries:{
         latest: string;
     };
-    heigh:number;
+    height:number;
     id:number;
     name:string;
     sprites:{
@@ -24,7 +24,7 @@ export type PokemonDetails={
             };
         };
     };
-    typer:PokemonType[];
+    types:PokemonType[];
     weight: number;
 
 
