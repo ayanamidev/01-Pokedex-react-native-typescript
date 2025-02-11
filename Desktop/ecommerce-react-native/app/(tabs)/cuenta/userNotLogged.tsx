@@ -32,7 +32,7 @@ const UserNotLogged = () => {
         const { email } = userCredential.user;
         if (email) {
           await AsyncStorage.setItem("userEmail", email);
-          router.push("/(tabs)/cuenta");
+          router.push("/(tabs)/cuenta/userLogged");
         }
       })
       .catch((error) => Alert.alert(error.code));

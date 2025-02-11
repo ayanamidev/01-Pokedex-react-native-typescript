@@ -13,40 +13,24 @@ const CuentaLayout = () => (
             style={styles.logo}
           />
         ),
-        headerTitleAlign: 'center', 
+        headerTitleAlign: 'center',
         headerStyle: {
-            backgroundColor: '#333333', // Color de fondo de la cabecera
-          },
+          backgroundColor: '#333333', // Color de fondo de la cabecera
+        },
+        
+        headerLeft: () => null, // Deshabilitar el botón de retroceso // Deshabilitar el botón de retroceso
       }}
     />
     <Stack.Screen
       name="userNotLogged"
       options={{
-        headerTitle: () => (
-          <Image
-            source={require('../../../assets/images/prozis_cover.jpg')}
-            style={styles.logo}
-          />
-        ),
-        headerTitleAlign: 'center', 
-        headerStyle: {
-            backgroundColor: '#333333', // Color de fondo de la cabecera
-          },
+        headerShown: false, // Ocultar el header para esta pantalla
       }}
     />
     <Stack.Screen
       name="registerFormScreen"
       options={{
-        headerTitle: () => (
-          <Image
-            source={require('../../../assets/images/prozis_cover.jpg')}
-            style={styles.logo}
-          />
-        ),
-        headerTitleAlign: 'center', 
-        headerStyle: {
-            backgroundColor: '#333333', // Color de fondo de la cabecera
-          },
+        headerShown: false, // Ocultar el header para esta pantalla
       }}
     />
     <Stack.Screen
@@ -58,10 +42,10 @@ const CuentaLayout = () => (
             style={styles.logo}
           />
         ),
-        headerTitleAlign: 'center', 
+        headerTitleAlign: 'center',
         headerStyle: {
-            backgroundColor: '#333333', // Color de fondo de la cabecera
-          },
+          backgroundColor: '#333333', // Color de fondo de la cabecera
+        },
       }}
     />
   </Stack>

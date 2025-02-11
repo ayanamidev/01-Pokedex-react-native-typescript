@@ -1,20 +1,30 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert, Pressable } from 'react-native';
+import { Button, Title, Paragraph, Card } from 'react-native-paper';
 import { FontAwesome } from '@expo/vector-icons';
-import { getAuth } from 'firebase/auth';
+import { getAuth, signOut } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker';
+import{Avatar} from "react-native-elements";
 
 const UserLogged = () => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (!user) {
+    return null; // O muestra un mensaje de error o redirige al usuario
+  }
+
+  const { uid, photoURL, displayName, email, phoneNumber } = user;
+
   const logout = () => {
-    const auth = getAuth();
     Alert.alert("Logout", "Are you sure you want to log out?", [
       { text: "Cancel" },
       {
         text: "Log out",
         onPress: async () => {
-          auth
-            .signOut()
+          signOut(auth)
             .then(async () => {
               await AsyncStorage.removeItem("userEmail");
               router.replace("/cuenta/userNotLogged"); // Usar replace en lugar de push
@@ -25,45 +35,80 @@ const UserLogged = () => {
     ]);
   };
 
+  
+
+  const changeAvatar = async () => {
+    // Pedir permisos
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert("Permiso denegado", "Necesitas permitir el acceso a la galería.");
+      return;
+    }
+  
+    console.log("Permiso concedido, abriendo galería...");
+  
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: 'images',
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+  
+      if (!result.canceled) {
+        console.log("Imagen seleccionada:", result.assets[0].uri);
+      } else {
+        console.log("Selección cancelada.");
+      }
+    } catch (error) {
+      console.error("Error al abrir la galería:", error);
+  
+      // En Android, intenta abrir la galería manualmente
+      if (Platform.OS === "android") {
+        IntentLauncher.startActivityAsync(IntentLauncher.ActivityAction.PICK);
+      }
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Usuario está logueado</Text>
-      <Pressable onPress={logout} style={styles.button}>
-        {({ pressed }) => (
-          <FontAwesome
-            name="sign-out"
-            color="black"
-            size={25}
-            style={{
-              marginLeft: 15,
-              opacity: pressed ? 0.5 : 1,
-            }}
-          />
-        )}
-      </Pressable>
+    <View style={styles.content}>
+      <Avatar
+        size="large"
+        rounded
+        icon={{ type: "material", name: "person" }}
+        containerStyle={styles.avatar}
+      >
+        <Avatar.Accessory size={24} onPress={changeAvatar} />
+
+      </Avatar>
+      <View>
+       <Button
+        mode="contained"
+        onPress={logout}
+        
+        icon={() => <FontAwesome name="sign-out" size={24} color="white" />}
+      >
+        Cerrar sesión
+      </Button> 
+      </View>
+      
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: '#f5f5f5', // Fondo claro
+  content: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#f2f2f2',
+    paddingVertical: 30,
+
   },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 20,
-  },
-  button: {
-    padding: 10,
-    backgroundColor: '#ddd',
-    borderRadius: 5,
-  },
+  avatar:{
+    marginRight: 20,
+    backgroundColor:"green"
+  }
 });
 
 export default UserLogged;
