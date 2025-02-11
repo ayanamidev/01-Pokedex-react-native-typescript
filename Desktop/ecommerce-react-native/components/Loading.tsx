@@ -4,6 +4,7 @@ import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 const Loading = () => {
   return (
     <View style={styles.container}>
+        //Es un componente que sirve para mostrar un indicador de carga
       <ActivityIndicator size="large" color="#0000ff" />
       <Text>Cargando...</Text>
     </View>

@@ -19,7 +19,7 @@ export default function Cuenta() {
   }, []);
 
 console.log(value);
-  if (value === false) {
+  if (value === null) {
     return <Loading />;
   }
   return value ? <UserLogged /> : <UserNotLogged />;
