@@ -11,35 +11,32 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: 'red', // Color activo de los iconos y títulos
+        tabBarInactiveTintColor: 'white', // Color inactivo de los iconos y títulos // Color de fondo de la pestaña activa
         headerShown: false,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
+        tabBarStyle: {
+          backgroundColor: '#333333', // Color de fondo de la barra de pestañas
+        },
       }}>
       <Tabs.Screen
         name="index"
         options={{
           title: 'Comprar',
-          tabBarIcon: ({ color }) => <Feather name="home" size={24} color="black" />,
+          tabBarIcon: ({ color }) => <Feather name="home" size={24} color={color} />,
         }}
       />
       <Tabs.Screen
         name="cesta"
         options={{
           title: 'Cesta',
-          tabBarIcon: ({ color }) => <Feather name="shopping-cart" size={24} color="black" />,
+          tabBarIcon: ({ color }) => <Feather name="shopping-cart" size={24} color={color} />,
         }}
       />
       <Tabs.Screen
         name="cuenta"
         options={{
           title: 'Cuenta',
-          tabBarIcon: ({ color }) => <Feather name="user" size={24} color="black" />,
+          tabBarIcon: ({ color }) => <Feather name="user" size={24} color={color} />,
         }}
       />
     </Tabs>

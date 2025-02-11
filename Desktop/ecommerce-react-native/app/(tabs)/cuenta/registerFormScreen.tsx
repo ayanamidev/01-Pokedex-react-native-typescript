@@ -1,46 +1,56 @@
 import React from 'react';
-import { View, StyleSheet, Alert, Image } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { useForm } from 'react-hook-form';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { Link, router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { TextInput, Button, Text, Title, Paragraph } from 'react-native-paper';
-import FormInput from '../../../components/FormInput'; // Asegúrate de que la ruta es correcta
+import FormInput from '@/components/FormInput'; // Asegúrate de que la ruta es correcta
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(6, "Password must be a least 6 characters long"),
+  confirmPassword: z
+    .string()
+    .min(6, "Password must be a least 6 characters long"),
 });
 
-const UserNotLogged = () => {
+const RegisterFormScreen = () => {
   const auth = getAuth();
   const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
     resolver: zodResolver(formSchema),
     mode: "onBlur",
     reValidateMode: "onBlur",
   });
 
-  const onSubmit = async (formData: { email: string; password: string }) => {
-    signInWithEmailAndPassword(auth, formData.email, formData.password)
-      .then(async (userCredential) => {
-        const { email } = userCredential.user;
-        if (email) {
-          await AsyncStorage.setItem("userEmail", email);
-          router.push("/(tabs)/cuenta");
-        }
-      })
-      .catch((error) => Alert.alert(error.code));
+  const onSubmit = async (formData: { email: string; password: string; confirmPassword: string }) => {
+    if (formData.password !== formData.confirmPassword) {
+      Alert.alert("Passwords don't match");
+    } else {
+      createUserWithEmailAndPassword(auth, formData.email, formData.password)
+        .then(async (userCredentials) => {
+          const { user } = userCredentials;
+          if (user.email) {
+            await AsyncStorage.setItem("userEmail", user.email);
+            router.push("/cuenta/userLogged");
+          } else {
+            Alert.alert("User email not found");
+          }
+        })
+        .catch(() => Alert.alert("Error creating user"));
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Title style={styles.title}>Iniciar sesión</Title>
+      <Title style={styles.title}>Registrarse</Title>
       <FormInput
         control={control}
         name="email"
@@ -61,11 +71,21 @@ const UserNotLogged = () => {
         placeholder="Enter your password"
         secureTextEntry={true}
       />
+      <FormInput
+        control={control}
+        name="confirmPassword"
+        label="Confirmar contraseña"
+        mode="outlined"
+        autoCapitalize="none"
+        inputMode="text"
+        placeholder="Repeat your password"
+        secureTextEntry={true}
+      />
       <Button mode="contained" onPress={handleSubmit(onSubmit)} style={styles.button} buttonColor="black">
-        Iniciar sesión
+        Registrarse
       </Button>
       <Paragraph style={styles.link}>
-        No tienes una cuenta aún? <Link href="/cuenta/registerFormScreen" style={styles.linkText}>Regístrate aquí</Link>
+        Ya tienes una cuenta? <Link href="/cuenta/userNotLogged" style={styles.linkText}>Inicia sesión aqui</Link>
       </Paragraph>
     </View>
   );
@@ -77,12 +97,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
-  },
-  image: {
-    width: '100%',
-    height: 200,
-    resizeMode: 'contain',
-    marginBottom: 20,
   },
   title: {
     fontSize: 28,
@@ -102,4 +116,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserNotLogged;
+export default RegisterFormScreen;
